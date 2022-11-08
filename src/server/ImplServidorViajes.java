@@ -31,6 +31,7 @@ public class ImplServidorViajes extends UnicastRemoteObject implements IntServid
      */
     private static HashMap<String, Viaje> mapa;
     private static HashMap<String, List<IntCallbackCliente>> objRemotes;
+    static GestorViajes gestor;
 
     /**
      * Constructor del gestor de viajes
@@ -39,6 +40,7 @@ public class ImplServidorViajes extends UnicastRemoteObject implements IntServid
     public ImplServidorViajes() throws RemoteException {
         mapa =  new HashMap<String, Viaje>();
         objRemotes = new HashMap<>();
+        gestor = new GestorViajes();
         File file = new File("viajes.json");
         try {
             if (!file.exists() ) {
@@ -164,18 +166,8 @@ public class ImplServidorViajes extends UnicastRemoteObject implements IntServid
      */
     public JSONArray consultaViajes(String origen) throws RemoteException {
         // TODO
+        return gestor.consultaViajes(origen);
 
-        JSONArray arrayViajesOrigen = new JSONArray();
-        Iterator<String> iterator = mapa.keySet().iterator();
-
-        while (iterator.hasNext()) {
-            String code = iterator.next();
-            String origenJson = mapa.get(code).getOrigen();
-            if(origen.equals(origenJson))
-                arrayViajesOrigen.add(mapa.get(code));
-
-        }
-        return arrayViajesOrigen;
     }
 
 
@@ -302,8 +294,14 @@ public class ImplServidorViajes extends UnicastRemoteObject implements IntServid
     public void eliminarNotificacion(String destino, IntCallbackCliente eliminarNotiCallBack) throws RemoteException {
         String mayusDestino = destino.toUpperCase();
         if(objRemotes.containsKey(mayusDestino)){
-            objRemotes.get(mayusDestino).remove(eliminarNotiCallBack);
-            eliminarNotiCallBack.notificame("Te has eliminado correctamente");
+            if(objRemotes.get(mayusDestino).contains(eliminarNotiCallBack)){
+                objRemotes.get(mayusDestino).remove(eliminarNotiCallBack);
+                eliminarNotiCallBack.notificame("eliminau");
+            }else{
+                eliminarNotiCallBack.notificame("No te puedo eliminar si no estás apuntado ; )");
+            }
+        }else {
+            eliminarNotiCallBack.notificame("Accion no válida");
         }
 
     }

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
 
@@ -35,11 +36,13 @@ public class ClienteViajesRMI {
             System.out.println("2. Reservar un viaje");
             System.out.println("3. Anular una reserva");
             System.out.println("4. Ofertar un viaje");
-            System.out.println("5. Borrar un viaje");
+            System.out.println("5. borrar Viaje");
+            System.out.println("6  crear noti viaje");
+            System.out.println("7  eliminar noti viaje");
             do {
-                System.out.print("\nElige una opcion (0..5): ");
+                System.out.print("\nElige una opcion (0..6): ");
                 opcion = teclado.nextInt();
-            } while ( (opcion<0) || (opcion>5) );
+            } while ( (opcion<0) || (opcion>7) );
             teclado.nextLine(); // Elimina retorno de carro del buffer de entrada
             return opcion;
         }
@@ -69,10 +72,9 @@ public class ClienteViajesRMI {
                 switch (opcion) {
                     case 0: // Guardar los datos en el fichero y salir del programa
                         // TODO
-
                         gestor.cierraSesion();
                         System.out.println("Datos Almacenado correctamente :) ");
-                        System.exit(0);
+                        UnicastRemoteObject.unexportObject(callback,true); //para forzar que cierre del callback
 
                         break;
 
@@ -85,11 +87,6 @@ public class ClienteViajesRMI {
 
                         if(viajesOfertados.size()==0) {
                             System.out.println("No se ha encontrado viajes desde este origen");
-                            System.out.println("¿Quieres que se te notifique cuando haya viajes disponibles?\nS = sí, N = No ");
-                            String decision = teclado.nextLine();
-                            if(decision.equalsIgnoreCase("S")){
-                                gestor.registrarNotificacion(origen,callback);
-                            }
                         }else {
                             System.out.println("Viajes disponibles" + "\n");
                             for(Object viaje: viajesOfertados)
@@ -163,15 +160,18 @@ public class ClienteViajesRMI {
                             System.out.println("Datos del viaje borrado ->" + viaje.toJSONString());
 
                         break;
-                    }
-                    case 6: { // quitarse de que me notifiquen
-
+                    }case 6: { // quiero que me notifiquen
                         // TODO
-
+                        System.out.println("Introduce el destino del que quieras recibir notificaciones");
+                        String destino = teclado.nextLine();
+                        gestor.registrarNotificacion(destino,callback);
+                        break;
+                    }case 7: { // quitarse de que me notifiquen
+                        // TODO
                         System.out.println("Introduce el destino del que no quieras recibir más notificaciones");
                         String destino = teclado.nextLine();
                         gestor.eliminarNotificacion(destino,callback);
-
+                        break;
                     }
                 } // fin switch
 
