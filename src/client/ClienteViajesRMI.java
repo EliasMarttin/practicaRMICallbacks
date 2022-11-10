@@ -36,9 +36,9 @@ public class ClienteViajesRMI {
             System.out.println("2. Reservar un viaje");
             System.out.println("3. Anular una reserva");
             System.out.println("4. Ofertar un viaje");
-            System.out.println("5. borrar Viaje");
-            System.out.println("6  crear noti viaje");
-            System.out.println("7  eliminar noti viaje");
+            System.out.println("5. Borrar Viaje");
+            System.out.println("6  Crear noti viaje");
+            System.out.println("7  Eliminar noti viaje");
             do {
                 System.out.print("\nElige una opcion (0..6): ");
                 opcion = teclado.nextInt();
@@ -74,8 +74,7 @@ public class ClienteViajesRMI {
                         // TODO
                         gestor.cierraSesion();
                         System.out.println("Datos Almacenado correctamente :) ");
-                        UnicastRemoteObject.unexportObject(callback,true); //para forzar que cierre del callback
-
+                        UnicastRemoteObject.unexportObject(callback,true);
                         break;
 
                     case 1: { // Consultar viajes con un origen dado
@@ -162,13 +161,13 @@ public class ClienteViajesRMI {
                         break;
                     }case 6: { // quiero que me notifiquen
                         // TODO
-                        System.out.println("Introduce el destino del que quieras recibir notificaciones");
+                        System.out.println("Introduce el origen del que quieras recibir notificaciones");
                         String destino = teclado.nextLine();
                         gestor.registrarNotificacion(destino,callback);
                         break;
                     }case 7: { // quitarse de que me notifiquen
                         // TODO
-                        System.out.println("Introduce el destino del que no quieras recibir más notificaciones");
+                        System.out.println("Introduce el origen del que no quieras recibir más notificaciones");
                         String destino = teclado.nextLine();
                         gestor.eliminarNotificacion(destino,callback);
                         break;
